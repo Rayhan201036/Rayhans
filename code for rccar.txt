@@ -1,0 +1,81 @@
+#include <SoftwareSerial.h>
+
+SoftwareSerial bluetooth(2, 3); // RX, TX
+
+void stopMotors() {
+  digitalWrite(11, LOW);
+  digitalWrite(10, LOW);
+  digitalWrite(9, LOW);
+  digitalWrite(8, LOW);
+}
+
+void setup() {
+  pinMode(11, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(8, OUTPUT);
+
+  Serial.begin(9600);
+  bluetooth.begin(9600);
+
+  Serial.println("Bluetooth Car Ready");
+  stopMotors();
+}
+
+void loop() {
+  if (bluetooth.available()) {
+    char command = bluetooth.read();
+    Serial.print("Received: ");
+    Serial.println(command);
+    Serial.print("ASCII code: ");
+    Serial.println((int)command);
+
+    switch (command) {
+      case 'F':
+        Serial.println("Moving Forward");
+        stopMotors();
+        digitalWrite(11, HIGH);
+        digitalWrite(10, LOW);
+        digitalWrite(9, LOW);
+        digitalWrite(8, HIGH);
+        break;
+
+      case 'B':
+        Serial.println("Moving Backward");
+        stopMotors();
+        digitalWrite(11, LOW);
+        digitalWrite(10, HIGH);
+        digitalWrite(9, HIGH);
+        digitalWrite(8, LOW);
+        break;
+
+      case 'L':
+        Serial.println("Turning Left");
+        stopMotors();
+        digitalWrite(11, LOW);
+        digitalWrite(10, HIGH);
+        digitalWrite(9, LOW);
+        digitalWrite(8, HIGH);
+        break;
+
+      case 'R':
+        Serial.println("Turning Right");
+        stopMotors();
+        digitalWrite(11, HIGH);
+        digitalWrite(10, LOW);
+        digitalWrite(9, HIGH);
+        digitalWrite(8, LOW);
+        break;
+
+      case 'S':
+        Serial.println("Stopping");
+        stopMotors();
+        break;
+
+      default:
+        Serial.println("Unknown command");
+        stopMotors();
+        break;
+    }
+  }
+}
